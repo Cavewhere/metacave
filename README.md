@@ -69,55 +69,45 @@ job than parsing `.srv` files!
                                             loop closures from another program
 
         {                                   This is a fixed station group, whose only
-                                            purpose is to specify the default units, UTM 
-                                            zone and datum shared by all stations in it
+                                            purpose is to specify the default elevation units,
+                                            and projection
 
           "distUnit": "m",                  Required - the default unit for all distances
                                             in this fixed station group
 
-          "angleUnit": "deg",               Required - the default unit for all lat/lon
-                                            angles in this fixed station group
-
-          "utmZone": "16N"                  Optional - the UTM zone for all north/east
-                                            locations
-                                            Required if both north/east locations and
-                                            lat/lon locations are used
-                                            Only N/S are allowed, no MGRS letters
-
-          "datum": "WGS84"                  Required - the reference ellipsoid for
-                                            locations 
-                                            Programs are not required to support anything
-                                            other than WGS84
+          "proj4":                          Required - the default projection for all fixed
+            "+proj=longlat +ellps=WGS84     station group. The projection should be
+             +datum=WGS84 +no_defs"         specified using proj4 definition.
+                                            For example the WGS84 projection:
+                                             "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+                                            And another example for UTM:
+                                             "+proj=utm +zone=20 +ellps=GRS80 +datum=NAD83 +units=m +no_defs"
 
           "stations": {
             "A1": {                         This is the fixed position for station A1
 
-                                            Either a "north"/"east" pair or a "lat"/"long"
-                                            pair must be defined
-                                            It is an error if both pairs are defined
+                                            "x"/"y" pair must be defined
 
-              "north": 4645328,             Optional distance - northing from the UTM
-                                            zone origin
-                                            Default unit: "distUnit"
+              "y": 34.234,                  Required - Depending on the projection defined in
+                                            "proj4" property, this could be latitude in
+                                            degrees or northing in meters.
+                                            units: defined in "proj4" property
 
-              "east": 502134,               Optional distance - easting from the UTM
-                                            zone origin
-                                            Default unit: "distUnit"
+              "x": -56.234,                 Required - Depending on the projection defined in
+                                            "proj4" property. For example the projection
+                                            could be latitude in degrees for WGS84 or
+                                            easting in meters for UTM.
+                                            units: defined in "proj4" property
 
-              "lat": 34                     Optional angle - latitude
-                                            positive: north of equator
-                                            negative: south of equator
-                                            Default unit: "angleUnit"
-
-              "long": -56                   Optional angle - longitude
-                                            positive: east of prime meridian
-                                            negative: west of prime meridian
-                                            Default unit: "angleUnit"
   
               "elev": 345,                  Required distance - elevation
                                             positive: above sea level
                                             negative: below sea level
                                             Default unit: "distUnit"
+
+              "proj4": "+proj...."          Optional - overrides the default projection for
+                                            the fixed station. See fixedStaions group proj4
+                                            documenation for more details.
             },
             "Q5": {                         This is the fixed position for station Q5
               ...
